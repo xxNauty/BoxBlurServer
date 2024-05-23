@@ -21,6 +21,14 @@ public class FileDataRepository implements Repository {
     public FileDataRepository(Connection connection) {
         this.connection = connection;
 
+        try { //usunięcie danych z poprzednich uruchomień
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("DELETE FROM " + TABLE_NAME);
+            statement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         try { //tworzenie tabeli w bazie
             Statement statement = this.connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS "
@@ -60,9 +68,30 @@ public class FileDataRepository implements Repository {
             statement.close();
         } catch (SQLException e) {
             LOGGER.warning(e.getMessage());
-            throw new RuntimeException(e);
         }
         return results;
+    }
+
+    public FileData selectByFilename(String filename) {
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE filepath = '" + filename + "'";
+        FileData fileData = null;
+        try {
+            Statement statement = this.connection.createStatement();
+            statement.execute(query);
+            ResultSet resultSet = statement.getResultSet();
+            fileData = new FileData(
+                    UUID.fromString(resultSet.getString("id")),
+                    resultSet.getString("filePath"),
+                    resultSet.getString("fileType"),
+//                    resultSet.getDate("receivedAt"),
+//                    resultSet.getDate("returnedAt"),
+                    resultSet.getInt("radius")
+            );
+
+        } catch (SQLException e) {
+            LOGGER.warning(e.getMessage());
+        }
+        return fileData;
     }
 
     @Override
@@ -76,25 +105,24 @@ public class FileDataRepository implements Repository {
 //                + "\"" +  data.getReceivedAt() + "\","
 //                + "\"" + data.getReturnedAt() + "\", "
                 + data.getRadius() + ")";
-//        System.out.println(query);
         try {
             Statement statement = this.connection.createStatement();
             statement.executeUpdate(query);
             statement.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
+            LOGGER.warning(e.getMessage());
         }
     }
 
     @Override
-    public void delete(int id) {
-        String query = "DELETE FROM " + TABLE_NAME + " WHERE id = " + id;
+    public void delete(UUID id) {
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE id = '" + id + "'";
         try {
             Statement statement = this.connection.createStatement();
             statement.executeUpdate(query);
             statement.close();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            LOGGER.warning(e.getMessage());
         }
     }
 }

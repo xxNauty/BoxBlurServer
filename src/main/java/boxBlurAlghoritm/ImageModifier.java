@@ -1,13 +1,15 @@
 package boxBlurAlghoritm;
 
+import boxBlurAlghoritm.entity.PixelDensity;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class ImageModifier {
+final public class ImageModifier {
+
+    private ImageModifier() {}
 
     public static BufferedImage addBlurEffect(BufferedImage image, int radius) {
         for (int x = 0; x < image.getWidth(); x++) {

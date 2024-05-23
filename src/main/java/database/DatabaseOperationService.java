@@ -1,52 +1,38 @@
 package database;
 
+import file.FileSaver;
+
 import java.sql.*;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class DatabaseOperationService {
+final public class DatabaseOperationService {
 
-    private final Logger logger = Logger.getLogger(DatabaseOperationService.class.getName());
+    private DatabaseOperationService() {}
 
-    private Connection connection;
+    private static final Logger logger = Logger.getLogger(DatabaseOperationService.class.getName());
 
-    public Connection getConnection() {
+    private static Connection connection;
+
+    public static Connection getConnection() {
         return connection;
     }
 
-    public void openConnection() {
+    public static void openConnection() {
         try {
             Connection connection = DriverManager.getConnection("jdbc:sqlite:src/main/java/database/data/index.db");
             if (connection != null) {
-                DatabaseMetaData meta = connection.getMetaData();
                 logger.info("A new database has been created.");
             }
-            this.connection = connection;
+            DatabaseOperationService.connection = connection;
         } catch (SQLException e) {
             logger.warning(e.getMessage());
         }
     }
 
-//    public void executeUpdateQuery(String query) {
-//        try {
-//            Statement statement = this.connection.createStatement();
-//            statement.executeUpdate(query);
-//            logger.info("Update query executed successfully.");
-//            statement.close();
-//        } catch (SQLException e) {
-//            logger.warning(e.getMessage());
-//        }
-//    }
-//
-//    public ResultSet executeSelectQuery(String query, Object datatype) {
-//        System.out.println(datatype.getClass().getName());
-//
-//        return null;
-//    }
-
-    public void closeConnection() {
+    public static void closeConnection() {
         try {
-            this.connection.close();
+            DatabaseOperationService.connection.close();
             logger.info("Connection closed.");
         } catch (SQLException e) {
             logger.warning(e.getMessage());

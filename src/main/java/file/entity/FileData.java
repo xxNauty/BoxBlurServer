@@ -1,6 +1,6 @@
 package file.entity;
 
-import other.Entity;
+import database.Entity;
 
 import java.util.UUID;
 
@@ -68,5 +68,9 @@ public class FileData implements Entity {
 
     public int getRadius() {
         return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 }

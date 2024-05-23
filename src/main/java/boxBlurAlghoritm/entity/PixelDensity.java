@@ -1,7 +1,7 @@
-package boxBlurAlghoritm;
+package boxBlurAlghoritm.entity;
 
 public class PixelDensity {
-    int r, g, b;
+    public int r, g, b;
 
     public PixelDensity(int r, int g, int b) {
         this.r = r;
